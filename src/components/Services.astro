@@ -1,0 +1,119 @@
+---
+import Icon from './Icon.astro';
+import { services } from '@/data/site';
+---
+
+<section id="servicos" class="section">
+  <div class="container stack">
+    <div class="services__head">
+      <div class="services__titles">
+        <p class="eyebrow">Serviços</p>
+        <h2 class="h2">O que a Bitzar faz pela sua empresa</h2>
+      </div>
+      <p class="lead services__intro">
+        Seis frentes, um mesmo time. Você não precisa contratar fornecedores diferentes para cada
+        etapa.
+      </p>
+    </div>
+
+    <ul class="services__grid">
+      {
+        services.map((service) => (
+          <li class="card">
+            <span class="card__icon">
+              <Icon name={service.icon} />
+            </span>
+            <h3 class="card__title">{service.title}</h3>
+            <p class="card__desc">{service.description}</p>
+            <p class="card__tags">
+              <span class="sr-only">Tecnologias: </span>
+              {service.tags.join(' · ')}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .services__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+  }
+
+  .services__titles {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 620px;
+  }
+
+  .services__intro {
+    max-width: 420px;
+  }
+
+  .services__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+    transition: border-color 0.15s, transform 0.15s;
+  }
+
+  .card:hover {
+    border-color: var(--navy);
+  }
+
+  .card__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background: var(--navy);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 21px;
+  }
+
+  .card__desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-2);
+  }
+
+  .card__tags {
+    margin-top: auto;
+    padding-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+</style>

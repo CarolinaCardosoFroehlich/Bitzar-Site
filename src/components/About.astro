@@ -1,0 +1,93 @@
+---
+import { stats } from '@/data/site';
+---
+
+<section id="sobre" class="section section--dark">
+  <div class="container about">
+    <div class="about__copy">
+      <p class="eyebrow">Sobre a Bitzar</p>
+      <h2 class="h2">Tecnologia de verdade, feita perto de você.</h2>
+      <p class="lead">
+        A Bitzar nasceu em Marília em 2016 para resolver um problema simples: empresas precisam de
+        software confiável, mas nem sempre encontram um parceiro que entenda o negócio antes de
+        escrever a primeira linha de código.
+      </p>
+      <p class="lead">
+        Hoje atendemos clientes de diferentes portes com um time que acompanha o projeto do começo
+        ao fim, com conversa direta e sem intermediários.
+      </p>
+    </div>
+
+    <dl class="stats">
+      {
+        stats.map((stat) => (
+          <div class="stats__item">
+            <dt class="stats__label">{stat.label}</dt>
+            <dd class="stats__value">{stat.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .about {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 56px;
+  }
+
+  .about__copy {
+    flex: 999 1 480px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .about__copy .lead {
+    line-height: 1.7;
+  }
+
+  .stats {
+    flex: 1 1 380px;
+    min-width: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--navy-line);
+    border: 1px solid var(--navy-line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    align-self: flex-start;
+  }
+
+  .stats__item {
+    background: var(--navy);
+    padding: 28px;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 6px;
+  }
+
+  .stats__value {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(32px, 4vw, 44px);
+    color: var(--accent);
+  }
+
+  .stats__label {
+    font-size: 14px;
+    color: var(--on-dark-2);
+  }
+
+  @media (max-width: 720px) {
+    .stats__item {
+      padding: 20px;
+    }
+  }
+</style>

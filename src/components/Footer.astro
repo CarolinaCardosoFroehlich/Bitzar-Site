@@ -1,0 +1,149 @@
+---
+import Logo from './Logo.astro';
+import { company } from '@/data/site';
+
+const year = new Date().getFullYear();
+
+const footerLinks = [
+  { label: 'Serviços', href: '#servicos' },
+  { label: 'Como trabalhamos', href: '#como-trabalhamos' },
+  { label: 'Cases', href: '#cases' },
+  { label: 'Diagnóstico', href: '#diagnostico' },
+];
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <Logo variant="dark" />
+        <p>{company.tagline}</p>
+      </div>
+
+      <div class="footer__cols">
+        <nav aria-labelledby="footer-nav-title" class="footer__col">
+          <p id="footer-nav-title" class="footer__label">Navegação</p>
+          <ul>
+            {
+              footerLinks.map((link) => (
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+
+        <div class="footer__col">
+          <p class="footer__label">Contato</p>
+          <address>
+            <span>{company.email}</span>
+            <span>{company.careersEmail}</span>
+            <span>{company.address}</span>
+            <span>{company.cityLine}</span>
+          </address>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© {year} {company.legalName} · CNPJ {company.cnpj}</span>
+      <a href="#topo">Política de Privacidade</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--navy);
+    color: var(--on-dark);
+    border-top: 1px solid var(--navy-line);
+  }
+
+  .footer__inner {
+    padding-top: 56px;
+    padding-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .footer__top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 40px;
+  }
+
+  .footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 360px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .footer__cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 56px;
+  }
+
+  .footer__col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .footer__label {
+    margin-bottom: 10px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--on-dark-label);
+  }
+
+  .footer__col a {
+    display: inline-block;
+    padding: 6px 0;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 15px;
+  }
+
+  .footer__col a:hover {
+    text-decoration: underline;
+    color: var(--white);
+  }
+
+  address {
+    font-style: normal;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 15px;
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 24px;
+    border-top: 1px solid var(--navy-line);
+    font-size: 13px;
+    color: var(--on-dark-label);
+  }
+
+  .footer__bottom a {
+    color: var(--on-dark-label);
+  }
+
+  .footer__bottom a:hover {
+    color: var(--white);
+  }
+</style>

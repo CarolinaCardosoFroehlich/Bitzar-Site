@@ -1,0 +1,152 @@
+---
+import { cases } from '@/data/site';
+---
+
+<section id="cases" class="section">
+  <div class="container cases">
+    <div class="cases__head">
+      <div class="cases__titles">
+        <p class="eyebrow">Cases</p>
+        <h2 class="h2">Projetos que já estão rodando</h2>
+      </div>
+      <a href="#cases" class="cases__all">Ver todos os cases →</a>
+    </div>
+
+    <ul class="cases__grid">
+      {
+        cases.map((item) => (
+          <li class="case">
+            {item.image ? (
+              <div class="case__media case__media--logo">
+                <img src={item.image} alt={`Logo ${item.client}`} loading="lazy" decoding="async" />
+              </div>
+            ) : (
+              <div class="case__media case__media--placeholder">[IMAGEM DO PROJETO]</div>
+            )}
+            <div class="case__body">
+              <p class="case__meta">
+                {item.sector} · {item.category}
+              </p>
+              <h3 class="case__client">{item.client}</h3>
+              <p class="case__text">
+                <strong>Desafio:</strong> {item.challenge}
+              </p>
+              <p class="case__text">
+                <strong>Resultado:</strong> {item.result}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cases {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .cases__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+  }
+
+  .cases__titles {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cases__all {
+    font-weight: 600;
+    font-size: 15px;
+    padding-block: 12px;
+  }
+
+  .cases__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: 20px;
+  }
+
+  .case {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .case__media {
+    height: 180px;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .case__media--logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    background: var(--bg-soft);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .case__media--logo img {
+    max-height: 72px;
+    max-width: 60%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+  }
+
+  .case__media--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-placeholder);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+
+  .case__body {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .case__meta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .case__client {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 21px;
+  }
+
+  .case__text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-2);
+  }
+
+  .case__text strong {
+    color: var(--navy);
+  }
+</style>

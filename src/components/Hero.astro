@@ -1,0 +1,163 @@
+---
+import { company, processSteps } from '@/data/site';
+---
+
+<section id="topo" class="hero">
+  <div class="container hero__inner">
+    <div class="hero__copy">
+      <p class="eyebrow">
+        {company.legalName} · {company.city} · Desde {company.foundedYear}
+      </p>
+      <h1 class="hero__title">
+        Software sob medida para empresas que querem <mark>crescer com tecnologia</mark>.
+      </h1>
+      <p class="hero__lead">
+        Somos a Bitzar, uma software house que desenvolve aplicativos, sistemas web, soluções de
+        dados e times dedicados para empresas de todos os tamanhos.
+      </p>
+      <div class="hero__actions">
+        <a href="#diagnostico" class="btn btn--primary">Fazer diagnóstico gratuito</a>
+        <a href="#servicos" class="btn btn--outline">Conhecer os serviços</a>
+      </div>
+    </div>
+
+    <aside class="process" aria-labelledby="process-title">
+      <p id="process-title" class="process__label">Do problema ao software em produção</p>
+      <ol class="process__list">
+        {
+          processSteps.map((step) => (
+            <li class="process__item">
+              <span class="process__number">{step.number}</span>
+              <div>
+                <p class="process__title">{step.title}</p>
+                <p class="process__desc">{step.description}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .hero__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 56px;
+    padding-top: 40px;
+    padding-bottom: 72px;
+  }
+
+  .hero__copy {
+    flex: 999 1 520px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .hero__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(36px, 5.5vw, 56px);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+  }
+
+  .hero__title mark {
+    background: var(--accent);
+    color: inherit;
+    padding: 0 8px;
+    border-radius: 4px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  .hero__lead {
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--text-2);
+    max-width: 560px;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .process {
+    flex: 1 1 380px;
+    min-width: 0;
+    background: var(--navy);
+    color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .process__label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--on-dark-label);
+  }
+
+  .process__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .process__item {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--navy-line);
+  }
+
+  .process__item:last-child {
+    border-bottom: none;
+  }
+
+  .process__number {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--accent);
+    width: 28px;
+    flex-shrink: 0;
+  }
+
+  .process__title {
+    font-weight: 600;
+    font-size: 17px;
+  }
+
+  .process__desc {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--on-dark-2);
+  }
+
+  @media (max-width: 720px) {
+    .hero__inner {
+      padding-top: 32px;
+      padding-bottom: 56px;
+      gap: 40px;
+    }
+
+    .hero__lead {
+      font-size: 17px;
+    }
+
+    .process {
+      padding: 24px;
+    }
+  }
+</style>

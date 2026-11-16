@@ -1,0 +1,607 @@
+---
+import Icon from './Icon.astro';
+import { diagnosticQuestions } from '@/data/site';
+
+const total = diagnosticQuestions.length;
+const first = diagnosticQuestions[0]!;
+---
+
+<section id="diagnostico" class="section section--dark">
+  <div class="container diag">
+    <div class="diag__intro">
+      <p class="eyebrow diag__eyebrow">Diagnóstico gratuito</p>
+      <h2 class="h2">Não sabe por onde começar? Responda {total} perguntas.</h2>
+      <p class="lead">
+        Leva menos de um minuto. Com as respostas, a Bitzar já chega na primeira conversa entendendo
+        o seu cenário.
+      </p>
+      <div class="diag__progress">
+        <span class="diag__progress-label" data-progress-label>Pergunta 1 de {total}</span>
+        <div
+          class="diag__bar"
+          role="progressbar"
+          aria-label="Progresso do diagnóstico"
+          aria-valuemin="0"
+          aria-valuemax={total}
+          aria-valuenow="0"
+          data-progress
+        >
+          <div class="diag__bar-fill" data-progress-fill></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="diag__card" data-diagnostic aria-live="polite">
+      <!-- Passo: pergunta -->
+      <div class="diag__view" data-view="question">
+        <div class="diag__top">
+          <button type="button" class="diag__back" data-back hidden>← Voltar</button>
+          <span class="diag__step" data-step-label>Pergunta 1 de {total}</span>
+        </div>
+        <fieldset class="diag__fieldset">
+          <legend class="diag__question" data-question tabindex="-1">{first.title}</legend>
+          <div class="diag__options" data-options>
+            {
+              first.options.map((label, i) => (
+                <button type="button" class="option" aria-pressed="false" data-option={i}>
+                  <span>{label}</span>
+                  <span class="option__mark">
+                    <Icon name="check" size={14} strokeWidth={3} />
+                  </span>
+                </button>
+              ))
+            }
+          </div>
+        </fieldset>
+        <button type="button" class="btn btn--primary diag__next" data-next disabled>
+          Escolha uma opção para continuar
+        </button>
+      </div>
+
+      <!-- Passo: resumo + contato -->
+      <div class="diag__view" data-view="summary" hidden>
+        <h3 class="diag__question" tabindex="-1" data-summary-title>Seu resumo</h3>
+        <dl class="summary" data-summary></dl>
+        <form class="diag__form" data-form novalidate>
+          <div class="diag__fields">
+            <label class="field">
+              Nome
+              <input type="text" name="nome" autocomplete="name" required />
+            </label>
+            <label class="field">
+              E-mail
+              <input type="email" name="email" autocomplete="email" required />
+            </label>
+          </div>
+          <p class="diag__error" data-error hidden></p>
+          <button type="submit" class="btn btn--accent">Enviar para a Bitzar</button>
+          <button type="button" class="diag__restart" data-restart>Refazer diagnóstico</button>
+        </form>
+      </div>
+
+      <!-- Passo: enviado -->
+      <div class="diag__view diag__sent" data-view="sent" hidden>
+        <span class="diag__sent-icon">
+          <Icon name="check" size={26} strokeWidth={2.5} />
+        </span>
+        <h3 class="diag__question" tabindex="-1" data-sent-title>Recebemos seu diagnóstico!</h3>
+        <p class="diag__sent-text">
+          Um especialista da Bitzar vai entrar em contato em até 1 dia útil para conversar sobre o
+          seu projeto.
+        </p>
+        <button type="button" class="btn btn--outline" data-restart>Começar de novo</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .diag {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 56px;
+  }
+
+  .diag__intro {
+    flex: 1 1 360px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .diag__eyebrow {
+    color: var(--accent) !important;
+  }
+
+  .diag__progress {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .diag__progress-label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--on-dark-2);
+  }
+
+  .diag__bar {
+    height: 6px;
+    max-width: 360px;
+    background: var(--navy-line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .diag__bar-fill {
+    height: 100%;
+    width: 12%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  .diag__card {
+    flex: 999 1 520px;
+    min-width: 0;
+    background: var(--white);
+    color: var(--navy);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+  }
+
+  .diag__view {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .diag__view[hidden] {
+    display: none;
+  }
+
+  .diag__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .diag__back {
+    background: none;
+    border: none;
+    padding: 12px 0;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-2);
+    cursor: pointer;
+  }
+
+  .diag__back:hover {
+    color: var(--navy);
+  }
+
+  .diag__step {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .diag__fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .diag__question {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(22px, 3vw, 26px);
+    padding: 0;
+    margin-bottom: 20px;
+    outline: none;
+  }
+
+  .diag__view > .diag__question {
+    margin-bottom: 0;
+  }
+
+  .diag__options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .diag__options :global(.option) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 56px;
+    padding: 15px 19px;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--navy);
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+
+  .diag__options :global(.option:hover) {
+    border-color: var(--navy);
+  }
+
+  .diag__options :global(.option__mark) {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line-input);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+  }
+
+  .diag__options :global(.option[aria-pressed='true']) {
+    padding: 14px 18px;
+    border: 2px solid var(--navy);
+    background: var(--bg-soft);
+    font-weight: 600;
+  }
+
+  .diag__options :global(.option[aria-pressed='true'] .option__mark) {
+    border: none;
+    background: var(--navy);
+    color: var(--accent);
+  }
+
+  .diag__next {
+    min-height: 52px;
+    width: 100%;
+  }
+
+  .diag__next:disabled {
+    background: var(--line);
+    color: var(--text-faint);
+    cursor: not-allowed;
+  }
+
+  .summary {
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+
+  .summary :global(.summary__row) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .summary :global(.summary__row:last-child) {
+    border-bottom: none;
+  }
+
+  .summary :global(dt) {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .summary :global(dd) {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .diag__form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .diag__fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: 14px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .field input {
+    min-height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--line-input);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--navy);
+  }
+
+  .field input:focus-visible {
+    outline: 3px solid var(--navy);
+    outline-offset: 0;
+  }
+
+  .field input[aria-invalid='true'] {
+    border-color: #b42318;
+  }
+
+  .diag__error {
+    font-size: 14px;
+    color: #b42318;
+  }
+
+  .diag__form .btn--accent {
+    min-height: 52px;
+  }
+
+  .diag__restart {
+    align-self: center;
+    background: none;
+    border: none;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-2);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .diag__sent {
+    align-items: flex-start;
+    gap: 16px;
+    padding-block: 24px;
+  }
+
+  .diag__sent-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .diag__sent-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-2);
+  }
+
+  @media (max-width: 720px) {
+    .diag {
+      gap: 40px;
+    }
+
+    .diag__card {
+      padding: 20px;
+    }
+  }
+</style>
+
+<script>
+  import { diagnosticQuestions as questions } from '@/data/site';
+
+  type Answer = number | null;
+
+  interface DiagnosticState {
+    step: number; // 0..total-1 = perguntas; total = resumo
+    answers: Answer[];
+    sent: boolean;
+  }
+
+  const total = questions.length;
+  const createInitialState = (): DiagnosticState => ({
+    step: 0,
+    answers: questions.map(() => null),
+    sent: false,
+  });
+
+  let state = createInitialState();
+
+  const root = document.querySelector<HTMLElement>('[data-diagnostic]');
+
+  if (root) {
+    const $ = <T extends HTMLElement>(selector: string): T => {
+      const el = root.querySelector<T>(selector) ?? document.querySelector<T>(selector);
+      if (!el) throw new Error(`Diagnóstico: elemento ${selector} não encontrado`);
+      return el;
+    };
+
+    const views = {
+      question: $<HTMLElement>('[data-view="question"]'),
+      summary: $<HTMLElement>('[data-view="summary"]'),
+      sent: $<HTMLElement>('[data-view="sent"]'),
+    };
+    const backBtn = $<HTMLButtonElement>('[data-back]');
+    const nextBtn = $<HTMLButtonElement>('[data-next]');
+    const stepLabel = $<HTMLElement>('[data-step-label]');
+    const questionEl = $<HTMLElement>('[data-question]');
+    const optionsEl = $<HTMLElement>('[data-options]');
+    const summaryEl = $<HTMLElement>('[data-summary]');
+    const form = $<HTMLFormElement>('[data-form]');
+    const errorEl = $<HTMLElement>('[data-error]');
+    const progress = $<HTMLElement>('[data-progress]');
+    const progressFill = $<HTMLElement>('[data-progress-fill]');
+    const progressLabel = $<HTMLElement>('[data-progress-label]');
+
+    // Reaproveita o ícone de check renderizado pelo Astro para as novas opções
+    const checkIcon = optionsEl.querySelector('.option__mark')?.innerHTML ?? '';
+    const optionClass = optionsEl.querySelector('.option')?.className ?? 'option';
+    const markClass = optionsEl.querySelector('.option__mark')?.className ?? 'option__mark';
+
+    function showView(name: keyof typeof views): void {
+      (Object.keys(views) as (keyof typeof views)[]).forEach((key) => {
+        views[key].hidden = key !== name;
+      });
+    }
+
+    function renderProgress(): void {
+      const done = state.step >= total;
+      const pct = done ? 100 : state.step * (100 / total) + 100 / total / 2;
+      progressFill.style.width = `${pct}%`;
+      progress.setAttribute('aria-valuenow', String(done ? total : state.step));
+      const label = done ? 'Concluído' : `Pergunta ${state.step + 1} de ${total}`;
+      progressLabel.textContent = label;
+      stepLabel.textContent = label;
+    }
+
+    function renderQuestion(): void {
+      const question = questions[state.step];
+      if (!question) return;
+      const selected = state.answers[state.step];
+
+      questionEl.textContent = question.title;
+      backBtn.hidden = state.step === 0;
+
+      optionsEl.replaceChildren(
+        ...question.options.map((label, index) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = optionClass;
+          btn.setAttribute('aria-pressed', String(selected === index));
+
+          const text = document.createElement('span');
+          text.textContent = label;
+          const mark = document.createElement('span');
+          mark.className = markClass;
+          mark.innerHTML = checkIcon;
+
+          btn.append(text, mark);
+          btn.addEventListener('click', () => selectOption(index));
+          return btn;
+        }),
+      );
+
+      const hasAnswer = selected !== null && selected !== undefined;
+      nextBtn.disabled = !hasAnswer;
+      nextBtn.textContent = hasAnswer
+        ? state.step === total - 1
+          ? 'Ver resumo →'
+          : 'Continuar →'
+        : 'Escolha uma opção para continuar';
+    }
+
+    function renderSummary(): void {
+      summaryEl.replaceChildren(
+        ...questions.map((question, i) => {
+          const row = document.createElement('div');
+          row.className = 'summary__row';
+          const dt = document.createElement('dt');
+          dt.textContent = question.short;
+          const dd = document.createElement('dd');
+          const answer = state.answers[i];
+          dd.textContent = answer === null || answer === undefined ? '—' : (question.options[answer] ?? '—');
+          row.append(dt, dd);
+          return row;
+        }),
+      );
+    }
+
+    function render(focusTarget?: HTMLElement): void {
+      renderProgress();
+      if (state.sent) {
+        showView('sent');
+      } else if (state.step >= total) {
+        renderSummary();
+        showView('summary');
+      } else {
+        renderQuestion();
+        showView('question');
+      }
+      focusTarget?.focus();
+    }
+
+    function selectOption(index: number): void {
+      state.answers[state.step] = index;
+      render();
+      // Mantém o foco na opção clicada após re-renderizar
+      optionsEl.querySelectorAll<HTMLButtonElement>('button')[index]?.focus();
+    }
+
+    function restart(): void {
+      state = createInitialState();
+      form.reset();
+      errorEl.hidden = true;
+      render(questionEl);
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (state.answers[state.step] === null) return;
+      state.step += 1;
+      render(state.step >= total ? $<HTMLElement>('[data-summary-title]') : questionEl);
+    });
+
+    backBtn.addEventListener('click', () => {
+      state.step = Math.max(0, state.step - 1);
+      render(questionEl);
+    });
+
+    root.querySelectorAll<HTMLButtonElement>('[data-restart]').forEach((btn) => {
+      btn.addEventListener('click', restart);
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const fields = Array.from(form.querySelectorAll<HTMLInputElement>('input'));
+      const invalid = fields.filter((input) => !input.checkValidity());
+      fields.forEach((input) => input.setAttribute('aria-invalid', String(!input.checkValidity())));
+
+      if (invalid.length > 0) {
+        errorEl.textContent = 'Preencha seu nome e um e-mail válido para enviar.';
+        errorEl.hidden = false;
+        invalid[0]?.focus();
+        return;
+      }
+
+      errorEl.hidden = true;
+      const data = new FormData(form);
+      const payload = {
+        nome: String(data.get('nome') ?? ''),
+        email: String(data.get('email') ?? ''),
+        respostas: Object.fromEntries(
+          questions.map((q, i) => {
+            const answer = state.answers[i];
+            return [q.id, answer === null || answer === undefined ? null : q.options[answer]];
+          }),
+        ),
+      };
+
+      // Protótipo: aqui entraria o envio para uma API/serviço de formulário.
+      console.info('[Bitzar] Diagnóstico enviado', payload);
+
+      state.sent = true;
+      render($<HTMLElement>('[data-sent-title]'));
+    });
+
+    // Liga as opções renderizadas no servidor
+    optionsEl.querySelectorAll<HTMLButtonElement>('[data-option]').forEach((btn) => {
+      btn.addEventListener('click', () => selectOption(Number(btn.dataset.option)));
+    });
+
+    renderProgress();
+  }
+</script>

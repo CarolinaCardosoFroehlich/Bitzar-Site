@@ -1,0 +1,67 @@
+---
+// Logo provisório — substituir pelo logo oficial da Bitzar.
+interface Props {
+  variant?: 'light' | 'dark';
+  showTag?: boolean;
+}
+
+const { variant = 'light', showTag = false } = Astro.props;
+---
+
+<span class:list={['logo', `logo--${variant}`]}>
+  <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+    <rect width="34" height="34" rx="8" class="logo__bg"></rect>
+    <rect x="8" y="8" width="7" height="18" rx="2" class="logo__bar-a"></rect>
+    <rect x="18" y="14" width="8" height="12" rx="2" class="logo__bar-b"></rect>
+  </svg>
+  <span class="logo__name">bitzar</span>
+  {showTag && <span class="logo__tag">solutions</span>}
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo__name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+
+  .logo__tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+
+  .logo__bar-a {
+    fill: var(--accent);
+  }
+
+  .logo--light .logo__bg {
+    fill: var(--navy);
+  }
+  .logo--light .logo__bar-b {
+    fill: var(--white);
+  }
+  .logo--light .logo__name {
+    color: var(--navy);
+  }
+
+  .logo--dark .logo__bg {
+    fill: var(--white);
+  }
+  .logo--dark .logo__bar-b {
+    fill: var(--navy);
+  }
+  .logo--dark .logo__name {
+    color: var(--white);
+  }
+</style>

@@ -1,6 +1,3 @@
-// Conteúdo do site em um só lugar, tipado.
-// Itens entre [colchetes] são placeholders para preencher com dados reais da Bitzar.
-
 export type IconName =
   | 'mobile'
   | 'code'
@@ -12,7 +9,10 @@ export type IconName =
   | 'globe'
   | 'chevron-down'
   | 'check'
-  | 'arrow-right';
+  | 'arrow-right'
+  | 'chat'
+  | 'send'
+  | 'close';
 
 export interface NavLink {
   label: string;
@@ -114,7 +114,7 @@ export const clientLogos: ClientLogo[] = [
   { name: 'Dia', src: '/images/dia.png' },
   { name: 'Bradesco', src: '/images/bradesco.jpeg' },
   { name: 'Minerva Foods', src: '/images/minerva.png' },
-  { name: 'Scania', src: '/images/scania.png', scale: 2.5 },
+  { name: 'Scania', src: '/images/scania.jpeg', scale: 2.5 },
 ];
 
 export const services: Service[] = [

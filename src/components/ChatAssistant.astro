@@ -1,3 +1,4 @@
+---
 import Icon from './Icon.astro';
 import { company } from '@/data/site';
 import type { Dictionary } from '@/i18n';
@@ -9,7 +10,6 @@ interface Props {
 const { t } = Astro.props;
 const suggested = t.faqs.filter((faq) => faq.suggested);
 
-// Valores que substituem {email}, {careersEmail} e {address} nas respostas
 const placeholders = {
   email: company.email.replace(/[[\]]/g, ''),
   careersEmail: company.careersEmail.replace(/[[\]]/g, ''),
@@ -92,7 +92,6 @@ const placeholders = {
     --chat-gap: 24px;
   }
 
-  /* ---------- Bolinha ---------- */
   .chat__launcher {
     position: fixed;
     right: var(--chat-gap);
@@ -100,7 +99,7 @@ const placeholders = {
     z-index: 80;
     width: 60px;
     height: 60px;
-    border: none;
+    border: 3px solid var(--white); 
     border-radius: 50%;
     background: var(--navy);
     color: var(--accent);
@@ -137,7 +136,6 @@ const placeholders = {
     transform: none;
   }
 
-  /* ---------- Painel ---------- */
   .chat__panel {
     position: fixed;
     right: var(--chat-gap);
@@ -235,7 +233,6 @@ const placeholders = {
     background: var(--navy-line);
   }
 
-  /* ---------- Mensagens (criadas pelo script → :global) ---------- */
   .chat__messages {
     flex: 1;
     overflow-y: auto;
@@ -360,7 +357,6 @@ const placeholders = {
     border-color: var(--navy);
   }
 
-  /* ---------- Campo de texto ---------- */
   .chat__form {
     display: flex;
     gap: 8px;
@@ -409,7 +405,6 @@ const placeholders = {
     text-align: center;
   }
 
-  /* ---------- Celular: chat em tela cheia ---------- */
   @media (max-width: 560px) {
     .chat {
       --chat-gap: 16px;
@@ -454,7 +449,6 @@ const placeholders = {
     const scrollToEnd = () => messages.scrollTo({ top: messages.scrollHeight });
     const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    // ---------- Abrir / fechar ----------
     function setOpen(open: boolean): void {
       panel.hidden = !open;
       toggle.setAttribute('aria-expanded', String(open));
@@ -501,7 +495,6 @@ const placeholders = {
           link.className = 'chat__action';
           link.href = fill(action.href);
           link.textContent = action.label;
-          // Link para uma seção do site: fecha o chat para a pessoa ver a seção
           if (link.getAttribute('href')?.startsWith('#')) {
             link.addEventListener('click', () => setOpen(false));
           }
@@ -528,7 +521,6 @@ const placeholders = {
       return typing;
     }
 
-    // ---------- Responder ----------
     async function ask(question: string, faqId?: string): Promise<void> {
       const text = question.trim();
       if (!text || busy) return;
@@ -538,7 +530,6 @@ const placeholders = {
 
       const faq = faqId ? (t.faqs.find((f) => f.id === faqId) ?? null) : findAnswer(text, t.faqs);
 
-      // Pequena pausa com "digitando…" para parecer uma conversa
       const typing = showTyping();
       await wait(700 + Math.random() * 500);
       typing.remove();

@@ -1,6 +1,5 @@
 import type { Dictionary } from '../types';
 
-// English. Items in [brackets] are placeholders.
 export const en: Dictionary = {
   meta: {
     title: 'Bitzar — Custom software for businesses',
@@ -221,6 +220,130 @@ export const en: Dictionary = {
         title: 'What size is your company?',
         short: 'Company size',
         options: ['Startup', 'Small business', 'Mid-sized company', 'Large company'],
+      },
+    ],
+  },
+
+  chat: {
+    openLabel: 'Open chat with the assistant',
+    closeLabel: 'Close chat',
+    title: 'Bitzar Assistant',
+    status: 'Online now',
+    greeting:
+      "Hi! I'm Bitzar's virtual assistant. I can answer questions about our services, timelines and how to start a project.",
+    suggestionsLabel: 'Frequently asked questions',
+    placeholder: 'Type your question…',
+    inputLabel: 'Your question',
+    send: 'Send',
+    typing: 'Assistant is typing…',
+    disclaimer: 'Virtual assistant with automated answers.',
+    fallback:
+      "I don't know how to answer that yet. To help you better, talk to one of our specialists: just take the assessment or send us an email.",
+    fallbackActions: [
+      { label: 'Talk to a specialist', href: '#diagnostico' },
+      { label: 'Send an email', href: 'mailto:{email}' },
+    ],
+    faqs: [
+      {
+        id: 'servicos',
+        question: 'What services do you offer?',
+        suggested: true,
+        keywords: ['service*', 'offer*', 'what do you do', 'what does bitzar do', 'solution*', 'work with'],
+        answer:
+          'Bitzar works in six areas:\n• Mobile apps (iOS, Android and PWA)\n• Web systems and SaaS\n• Data and analytics\n• Cloud and operations\n• Dedicated teams\n• Consulting and governance',
+        actions: [{ label: 'See services', href: '#servicos' }],
+      },
+      {
+        id: 'preco',
+        question: 'How much does a project cost?',
+        suggested: true,
+        keywords: ['price*', 'pricing', 'cost*', 'how much', 'budget*', 'quote', 'fee*', 'expensive', 'cheap', 'rate*'],
+        answer:
+          'The price depends on the size and complexity of the project, so every proposal is tailor-made.\n\nThe fastest way to get an estimate is the free assessment: 4 questions, and our team gets back to you within 1 business day.',
+        actions: [{ label: 'Take the assessment', href: '#diagnostico' }],
+      },
+      {
+        id: 'prazo',
+        question: 'How long does a project take?',
+        suggested: true,
+        keywords: ['how long', 'how much time', 'timeline*', 'deadline*', 'deliver*', 'duration', 'turnaround'],
+        answer:
+          'It depends on the scope. We work in short delivery cycles, so you follow the results from the start, and the overall timeline is agreed with you in the proposal.\n\nIn the assessment you can already tell us the timeline you have in mind.',
+        actions: [{ label: 'Take the assessment', href: '#diagnostico' }],
+      },
+      {
+        id: 'contato',
+        question: 'How can I talk to someone on the team?',
+        suggested: true,
+        keywords: ['contact', 'talk', 'speak', 'someone', 'phone', 'call', 'whatsapp', 'email', 'e mail', 'human', 'person', 'agent', 'meeting', 'reach'],
+        answer:
+          'You can reach our team at {email} or leave your details in the assessment. A specialist will contact you within 1 business day.',
+        actions: [
+          { label: 'Take the assessment', href: '#diagnostico' },
+          { label: 'Send an email', href: 'mailto:{email}' },
+        ],
+      },
+      {
+        id: 'tecnologias',
+        question: 'What technologies do you use?',
+        keywords: ['technolog*', 'language*', 'stack', 'framework*', '.net', 'dotnet', 'sql', 'react', 'azure', 'aws', 'databricks', 'tool*'],
+        answer:
+          'We use whatever technology makes the most sense for each project. Some of the team’s most used are .NET, SQL Server, Azure, AWS, Databricks and BI tools, plus mobile development for iOS and Android.',
+      },
+      {
+        id: 'localizacao',
+        question: 'Where is Bitzar located?',
+        keywords: ['where', 'address', 'location', 'located', 'marilia', 'city', 'office', 'on site', 'remote*', 'headquarters', 'based'],
+        answer: 'Our headquarters are at {address}, in Marília, Brazil.',
+      },
+      {
+        id: 'times',
+        question: 'Do you provide developers?',
+        keywords: ['staffing', 'squad*', 'team*', 'developer*', 'engineer*', 'outsourc*', 'allocat*', 'augmentation'],
+        answer:
+          'Yes! In the dedicated teams model, Bitzar specialists work as part of your team, at your pace, with as much technical management as you need.',
+        actions: [{ label: 'See how to work with us', href: '#como-trabalhamos' }],
+      },
+      {
+        id: 'mobile',
+        question: 'Do you build mobile apps?',
+        keywords: ['app', 'apps', 'mobile', 'ios', 'android', 'pwa', 'play store', 'app store'],
+        answer:
+          'We do. We build iOS, Android and PWA apps, from prototype to app store release.',
+      },
+      {
+        id: 'dados',
+        question: 'Do you work with data?',
+        keywords: ['data', 'bi', 'dashboard*', 'analytics', 'report*', 'metric*', 'kpi*', 'data lake'],
+        answer:
+          'We do. We organize and unify data, build dashboards and reports, and set up platforms such as data lakes. One example is the Nestlé case, which unified data from several Latin American countries.',
+        actions: [{ label: 'See case studies', href: '#cases' }],
+      },
+      {
+        id: 'vagas',
+        question: 'Are you hiring?',
+        keywords: ['job*', 'career*', 'work for', 'work at', 'resume', 'cv', 'internship', 'vacanc*', 'opening*', 'are you hiring'],
+        answer: "Great to hear you'd like to join the team! Send your resume to {careersEmail}.",
+      },
+      {
+        id: 'diagnostico',
+        question: 'How does the assessment work?',
+        keywords: ['assessment', 'diagnos*', 'get started', 'where to start', 'start', 'first step'],
+        answer:
+          'It’s 4 quick questions about your challenge, the stage of the idea, the timeline and the size of your company. Then just leave your name and email, and a Bitzar specialist will contact you within 1 business day.',
+        actions: [{ label: 'Take the assessment', href: '#diagnostico' }],
+      },
+      {
+        id: 'saudacao',
+        question: 'Hi',
+        keywords: ['hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening'],
+        answer: 'Hi! How can I help you? Type your question or pick one of the frequently asked questions.',
+      },
+      {
+        id: 'obrigado',
+        question: 'Thank you',
+        keywords: ['thank*', 'thx', 'cheers'],
+        answer: "You're welcome! If you have any other questions, just ask.",
       },
     ],
   },

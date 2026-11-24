@@ -39,21 +39,17 @@ export interface CaseStudy {
 }
 
 export interface DiagnosticQuestion {
-  /** Igual em todos os idiomas: é o que liga as respostas entre eles. */
-  id: string;
+      id: string;
   title: string;
   short: string;
   options: string[];
 }
 
-/** Textos do diagnóstico. Também são usados pelo script que roda no navegador. */
 export interface DiagnosticTexts {
   eyebrow: string;
-  /** Use {total} para o número de perguntas. */
   title: string;
   lead: string;
   progressLabel: string;
-  /** Use {current} e {total}. */
   stepLabel: string;
   doneLabel: string;
   back: string;
@@ -74,6 +70,37 @@ export interface DiagnosticTexts {
   questions: DiagnosticQuestion[];
 }
 
+export interface ChatAction {
+  label: string;
+  href: string;
+}
+
+export interface ChatFaq {
+  id: string;
+  question: string;
+  keywords: string[];
+  answer: string;
+  actions?: ChatAction[];
+  suggested?: boolean;
+}
+
+export interface ChatTexts {
+  openLabel: string;
+  closeLabel: string;
+  title: string;
+  status: string;
+  greeting: string;
+  suggestionsLabel: string;
+  placeholder: string;
+  inputLabel: string;
+  send: string;
+  typing: string;
+  disclaimer: string;
+  fallback: string;
+  fallbackActions: ChatAction[];
+  faqs: ChatFaq[];
+}
+
 export interface Dictionary {
   meta: {
     title: string;
@@ -86,7 +113,6 @@ export interface Dictionary {
     cta: string;
     openMenu: string;
     closeMenu: string;
-    /** Use {language} para o nome do idioma atual. */
     languageButton: string;
   };
   hero: {
@@ -136,6 +162,7 @@ export interface Dictionary {
     items: CaseStudy[];
   };
   diagnostic: DiagnosticTexts;
+  chat: ChatTexts;
   footer: {
     tagline: string;
     navTitle: string;

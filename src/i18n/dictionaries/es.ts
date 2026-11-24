@@ -1,6 +1,5 @@
 import type { Dictionary } from '../types';
 
-// Español. Los elementos entre [corchetes] son marcadores de posición.
 export const es: Dictionary = {
   meta: {
     title: 'Bitzar — Software a medida para empresas',
@@ -222,6 +221,130 @@ export const es: Dictionary = {
         title: '¿Cuál es el tamaño de tu empresa?',
         short: 'Tamaño',
         options: ['Startup', 'Pequeña empresa', 'Mediana empresa', 'Gran empresa'],
+      },
+    ],
+  },
+
+  chat: {
+    openLabel: 'Abrir chat con el asistente',
+    closeLabel: 'Cerrar chat',
+    title: 'Asistente Bitzar',
+    status: 'En línea ahora',
+    greeting:
+      '¡Hola! Soy el asistente virtual de Bitzar. Puedo resolver dudas sobre nuestros servicios, plazos y cómo empezar un proyecto.',
+    suggestionsLabel: 'Preguntas frecuentes',
+    placeholder: 'Escribe tu pregunta…',
+    inputLabel: 'Tu pregunta',
+    send: 'Enviar',
+    typing: 'El asistente está escribiendo…',
+    disclaimer: 'Asistente virtual con respuestas automáticas.',
+    fallback:
+      'Todavía no sé responder esa pregunta. Para atenderte mejor, habla con uno de nuestros especialistas: solo tienes que hacer el diagnóstico o enviarnos un correo.',
+    fallbackActions: [
+      { label: 'Hablar con un especialista', href: '#diagnostico' },
+      { label: 'Enviar correo', href: 'mailto:{email}' },
+    ],
+    faqs: [
+      {
+        id: 'servicos',
+        question: '¿Qué servicios ofrecen?',
+        suggested: true,
+        keywords: ['servicio*', 'ofrec*', 'que hacen', 'que hace bitzar', 'solucion*', 'trabajan con'],
+        answer:
+          'Bitzar trabaja en seis frentes:\n• Aplicaciones móviles (iOS, Android y PWA)\n• Sistemas web y SaaS\n• Datos y analytics\n• Cloud y operaciones\n• Equipos dedicados\n• Consultoría y gobernanza',
+        actions: [{ label: 'Ver servicios', href: '#servicos' }],
+      },
+      {
+        id: 'preco',
+        question: '¿Cuánto cuesta un proyecto?',
+        suggested: true,
+        keywords: ['precio*', 'cuesta*', 'costo*', 'coste*', 'valor*', 'presupuesto*', 'cotizacion', 'cobran', 'caro', 'barato', 'cuanto sale'],
+        answer:
+          'El valor depende del tamaño y la complejidad del proyecto, por eso cada propuesta se hace a medida.\n\nLa forma más rápida de tener una estimación es hacer el diagnóstico gratuito: son 4 preguntas y nuestro equipo responde en un plazo de 1 día hábil.',
+        actions: [{ label: 'Hacer diagnóstico', href: '#diagnostico' }],
+      },
+      {
+        id: 'prazo',
+        question: '¿Cuánto tiempo lleva un proyecto?',
+        suggested: true,
+        keywords: ['plazo*', 'cuanto tiempo', 'tiempo lleva', 'tiempo de entrega', 'demora*', 'cuando esta listo', 'entrega*', 'duracion'],
+        answer:
+          'Depende del alcance. Trabajamos con entregas cortas, así que sigues los resultados desde el principio, y el plazo total se define contigo en la propuesta.\n\nEn el diagnóstico ya puedes contarnos el plazo que tienes en mente.',
+        actions: [{ label: 'Hacer diagnóstico', href: '#diagnostico' }],
+      },
+      {
+        id: 'contato',
+        question: '¿Cómo hablo con alguien del equipo?',
+        suggested: true,
+        keywords: ['contacto', 'contactar', 'hablar', 'hablo', 'alguien', 'telefono', 'llamar', 'whatsapp', 'correo', 'email', 'e mail', 'humano', 'persona', 'agente', 'reunion'],
+        answer:
+          'Puedes hablar con nuestro equipo por correo en {email} o dejar tus datos en el diagnóstico. Un especialista se pondrá en contacto en un plazo de 1 día hábil.',
+        actions: [
+          { label: 'Hacer diagnóstico', href: '#diagnostico' },
+          { label: 'Enviar correo', href: 'mailto:{email}' },
+        ],
+      },
+      {
+        id: 'tecnologias',
+        question: '¿Qué tecnologías usan?',
+        keywords: ['tecnologia*', 'lenguaje*', 'stack', 'framework*', '.net', 'dotnet', 'sql', 'react', 'azure', 'aws', 'databricks', 'herramienta*'],
+        answer:
+          'Usamos la tecnología que tenga más sentido para cada proyecto. Entre las más usadas por el equipo están .NET, SQL Server, Azure, AWS, Databricks y herramientas de BI, además de desarrollo móvil para iOS y Android.',
+      },
+      {
+        id: 'localizacao',
+        question: '¿Dónde está Bitzar?',
+        keywords: ['donde', 'direccion', 'ubica*', 'marilia', 'ciudad', 'oficina', 'presencial', 'remoto', 'sede'],
+        answer: 'Nuestra sede está en {address}, en Marília (Brasil).',
+      },
+      {
+        id: 'times',
+        question: '¿Asignan desarrolladores?',
+        keywords: ['staffing', 'squad*', 'equipo*', 'desarrollador*', 'programador*', 'tercerizac*', 'outsourcing', 'asigna*'],
+        answer:
+          '¡Sí! En el modelo de equipos dedicados, especialistas de Bitzar trabajan integrados a tu equipo, a tu ritmo, con la gestión técnica que necesites.',
+        actions: [{ label: 'Ver formas de contratar', href: '#como-trabalhamos' }],
+      },
+      {
+        id: 'mobile',
+        question: '¿Hacen aplicaciones?',
+        keywords: ['app', 'apps', 'aplicacion*', 'movil', 'celular', 'ios', 'android', 'pwa', 'play store', 'app store'],
+        answer:
+          'Sí. Desarrollamos apps para iOS, Android y PWA, del prototipo a la publicación en las tiendas.',
+      },
+      {
+        id: 'dados',
+        question: '¿Trabajan con datos?',
+        keywords: ['dato*', 'bi', 'dashboard*', 'panel*', 'analytics', 'informe*', 'reporte*', 'indicador*', 'data lake'],
+        answer:
+          'Sí. Organizamos y unificamos datos, creamos paneles e informes y estructuramos plataformas como data lakes. Un ejemplo es el caso de Nestlé, que unificó los datos de varios países de América Latina.',
+        actions: [{ label: 'Ver casos', href: '#cases' }],
+      },
+      {
+        id: 'vagas',
+        question: '¿Tienen vacantes abiertas?',
+        keywords: ['vacante*', 'empleo*', 'trabajar en', 'trabaja con nosotros', 'curriculum', 'cv', 'carrera', 'pasantia', 'practica*'],
+        answer: '¡Qué bueno que quieras ser parte del equipo! Envía tu currículum a {careersEmail}.',
+      },
+      {
+        id: 'diagnostico',
+        question: '¿Cómo funciona el diagnóstico?',
+        keywords: ['diagnostico', 'como empezar', 'por donde empezar', 'empezar', 'primer paso'],
+        answer:
+          'Son 4 preguntas rápidas sobre tu desafío, la etapa de la idea, el plazo y el tamaño de la empresa. Después solo dejas tu nombre y correo, y un especialista de Bitzar se pondrá en contacto en un plazo de 1 día hábil.',
+        actions: [{ label: 'Hacer diagnóstico', href: '#diagnostico' }],
+      },
+      {
+        id: 'saudacao',
+        question: 'Hola',
+        keywords: ['hola', 'buenos dias', 'buenas tardes', 'buenas noches', 'buenas', 'hey'],
+        answer: '¡Hola! ¿Cómo puedo ayudarte? Escribe tu duda o elige una de las preguntas frecuentes.',
+      },
+      {
+        id: 'obrigado',
+        question: 'Gracias',
+        keywords: ['gracias', 'agradezco'],
+        answer: '¡Gracias a ti! Si tienes otra duda, aquí estoy.',
       },
     ],
   },

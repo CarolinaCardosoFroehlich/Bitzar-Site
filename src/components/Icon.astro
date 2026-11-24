@@ -10,7 +10,6 @@ interface Props {
 
 const { name, size = 22, strokeWidth = 2, class: className } = Astro.props;
 
-// Ícones de traço (24x24), no mesmo estilo do protótipo.
 const paths: Record<IconName, string> = {
   mobile: '<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>',
   code: '<path d="M8 7l-5 5 5 5"/><path d="M16 7l5 5-5 5"/><path d="M14 4l-4 16"/>',
@@ -25,6 +24,9 @@ const paths: Record<IconName, string> = {
   'chevron-down': '<path d="M6 9l6 6 6-6"/>',
   check: '<path d="M5 12l5 5 9-10"/>',
   'arrow-right': '<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>',
+  chat: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/>',
+  send: '<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/>',
+  close: '<path d="M18 6L6 18"/><path d="M6 6l12 12"/>',
 };
 ---
 

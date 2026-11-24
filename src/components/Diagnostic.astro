@@ -73,8 +73,18 @@ const first = diagnosticQuestions[0]!;
               <input type="email" name="email" autocomplete="email" required />
             </label>
           </div>
-          <p class="diag__error" data-error hidden></p>
-          <button type="submit" class="btn btn--accent">Enviar para a Bitzar</button>
+          <input
+            type="checkbox"
+            name="botcheck"
+            class="diag__honeypot"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+          />
+          <p class="diag__error" role="alert" data-error hidden></p>
+          <button type="submit" class="btn btn--accent diag__submit" data-submit>
+            Enviar para a Bitzar
+          </button>
           <button type="button" class="diag__restart" data-restart>Refazer diagnóstico</button>
         </form>
       </div>
@@ -97,18 +107,17 @@ const first = diagnosticQuestions[0]!;
 
 <style>
   .diag {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 56px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: 80px;
+    align-items: center;
   }
 
   .diag__intro {
-    flex: 1 1 360px;
-    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    max-width: 520px;
   }
 
   .diag__eyebrow {
@@ -145,12 +154,13 @@ const first = diagnosticQuestions[0]!;
   }
 
   .diag__card {
-    flex: 999 1 520px;
-    min-width: 0;
+    width: 100%;
+    max-width: 760px;
+    justify-self: end;
     background: var(--white);
     color: var(--navy);
     border-radius: var(--radius-lg);
-    padding: 32px;
+    padding: 40px;
   }
 
   .diag__view {
@@ -391,11 +401,29 @@ const first = diagnosticQuestions[0]!;
     color: var(--text-2);
   }
 
-  @media (max-width: 720px) {
+  .diag__submit:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
+
+  /* Campo invisível anti-spam (honeypot) */
+  .diag__honeypot {
+    display: none;
+  }
+
+  @media (max-width: 960px) {
     .diag {
+      grid-template-columns: 1fr;
       gap: 40px;
     }
 
+    .diag__intro,
+    .diag__card {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 720px) {
     .diag__card {
       padding: 20px;
     }
@@ -404,6 +432,7 @@ const first = diagnosticQuestions[0]!;
 
 <script>
   import { diagnosticQuestions as questions } from '@/data/site';
+  import { sendDiagnostic, type DiagnosticPayload } from '@/lib/web3forms';
 
   type Answer = number | null;
 
@@ -564,37 +593,59 @@ const first = diagnosticQuestions[0]!;
       btn.addEventListener('click', restart);
     });
 
-    form.addEventListener('submit', (event) => {
+    const submitBtn = $<HTMLButtonElement>('[data-submit]');
+    const submitLabel = submitBtn.textContent?.trim() ?? 'Enviar';
+
+    function setSending(sending: boolean): void {
+      submitBtn.disabled = sending;
+      submitBtn.textContent = sending ? 'Enviando…' : submitLabel;
+    }
+
+    function showError(message: string): void {
+      errorEl.textContent = message;
+      errorEl.hidden = false;
+    }
+
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      const fields = Array.from(form.querySelectorAll<HTMLInputElement>('input'));
+      const fields = Array.from(
+        form.querySelectorAll<HTMLInputElement>('input[name="nome"], input[name="email"]'),
+      );
       const invalid = fields.filter((input) => !input.checkValidity());
       fields.forEach((input) => input.setAttribute('aria-invalid', String(!input.checkValidity())));
 
       if (invalid.length > 0) {
-        errorEl.textContent = 'Preencha seu nome e um e-mail válido para enviar.';
-        errorEl.hidden = false;
+        showError('Preencha seu nome e um e-mail válido para enviar.');
         invalid[0]?.focus();
         return;
       }
 
       errorEl.hidden = true;
       const data = new FormData(form);
-      const payload = {
-        nome: String(data.get('nome') ?? ''),
-        email: String(data.get('email') ?? ''),
-        respostas: Object.fromEntries(
-          questions.map((q, i) => {
-            const answer = state.answers[i];
-            return [q.id, answer === null || answer === undefined ? null : q.options[answer]];
-          }),
-        ),
+      const payload: DiagnosticPayload = {
+        nome: String(data.get('nome') ?? '').trim(),
+        email: String(data.get('email') ?? '').trim(),
+        respostas: questions.map((q, i) => {
+          const answer = state.answers[i];
+          return {
+            pergunta: q.short,
+            resposta: answer === null || answer === undefined ? '—' : (q.options[answer] ?? '—'),
+          };
+        }),
+        botcheck: data.get('botcheck') !== null,
       };
 
-      // Protótipo: aqui entraria o envio para uma API/serviço de formulário.
-      console.info('[Bitzar] Diagnóstico enviado', payload);
-
-      state.sent = true;
-      render($<HTMLElement>('[data-sent-title]'));
+      setSending(true);
+      try {
+        await sendDiagnostic(payload);
+        state.sent = true;
+        render($<HTMLElement>('[data-sent-title]'));
+      } catch (error) {
+        console.error('[Bitzar] Falha ao enviar diagnóstico', error);
+        showError('Não foi possível enviar agora. Tente de novo em alguns instantes.');
+      } finally {
+        setSending(false);
+      }
     });
 
     // Liga as opções renderizadas no servidor

@@ -1,27 +1,38 @@
 ---
-import { cases } from '@/data/site';
+import { format, type Dictionary } from '@/i18n';
+
+interface Props {
+  t: Dictionary['cases'];
+}
+
+const { t } = Astro.props;
 ---
 
 <section id="cases" class="section">
   <div class="container cases">
     <div class="cases__head">
       <div class="cases__titles">
-        <p class="eyebrow">Cases</p>
-        <h2 class="h2">Projetos que já estão rodando</h2>
+        <p class="eyebrow">{t.eyebrow}</p>
+        <h2 class="h2">{t.title}</h2>
       </div>
-      <a href="#cases" class="cases__all">Ver todos os cases →</a>
+      <a href="#cases" class="cases__all">{t.seeAll}</a>
     </div>
 
     <ul class="cases__grid">
       {
-        cases.map((item) => (
+        t.items.map((item) => (
           <li class="case">
             {item.image ? (
               <div class="case__media case__media--logo">
-                <img src={item.image} alt={`Logo ${item.client}`} loading="lazy" decoding="async" />
+                <img
+                  src={item.image}
+                  alt={format(t.logoAlt, { client: item.client })}
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
             ) : (
-              <div class="case__media case__media--placeholder">[IMAGEM DO PROJETO]</div>
+              <div class="case__media case__media--placeholder">{t.imagePlaceholder}</div>
             )}
             <div class="case__body">
               <p class="case__meta">
@@ -29,10 +40,10 @@ import { cases } from '@/data/site';
               </p>
               <h3 class="case__client">{item.client}</h3>
               <p class="case__text">
-                <strong>Desafio:</strong> {item.challenge}
+                <strong>{t.challengeLabel}</strong> {item.challenge}
               </p>
               <p class="case__text">
-                <strong>Resultado:</strong> {item.result}
+                <strong>{t.resultLabel}</strong> {item.result}
               </p>
             </div>
           </li>

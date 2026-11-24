@@ -1,14 +1,20 @@
 ---
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
-import { languages, navLinks } from '@/data/site';
+import { format, getDictionary, locales, localeInfo, localePath, type Locale } from '@/i18n';
 
-const current = languages[0]!;
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = getDictionary(lang).header;
+const current = localeInfo[lang];
 ---
 
 <header class="header" data-header>
   <div class="container header__inner">
-    <a href="#topo" class="header__brand" aria-label="Bitzar Solutions — início">
+    <a href="#topo" class="header__brand" aria-label={t.homeLabel}>
       <Logo showTag />
     </a>
 
@@ -18,15 +24,17 @@ const current = languages[0]!;
       aria-expanded="false"
       aria-controls="main-nav"
       data-menu-toggle
+      data-label-open={t.openMenu}
+      data-label-close={t.closeMenu}
     >
-      <span class="sr-only">Abrir menu</span>
+      <span class="sr-only">{t.openMenu}</span>
       <span class="header__burger" aria-hidden="true"></span>
     </button>
 
-    <nav id="main-nav" class="header__nav" aria-label="Principal" data-menu>
+    <nav id="main-nav" class="header__nav" aria-label={t.mainNavLabel} data-menu>
       <ul class="header__links">
         {
-          navLinks.map((link) => (
+          t.links.map((link) => (
             <li>
               <a href={link.href} class="header__link">
                 {link.label}
@@ -37,7 +45,7 @@ const current = languages[0]!;
       </ul>
 
       <div class="header__actions">
-        <a href="#diagnostico" class="btn btn--primary header__cta">Faça um diagnóstico</a>
+        <a href="#diagnostico" class="btn btn--primary header__cta">{t.cta}</a>
 
         <div class="lang" data-lang>
           <button
@@ -46,35 +54,34 @@ const current = languages[0]!;
             aria-haspopup="true"
             aria-expanded="false"
             aria-controls="lang-menu"
-            aria-label={`Alterar idioma (atual: ${current.name})`}
+            aria-label={format(t.languageButton, { language: current.name })}
             data-lang-toggle
           >
             <Icon name="globe" size={16} strokeWidth={1.75} />
-            <span data-lang-current>{current.short}</span>
+            <span>{current.short}</span>
             <Icon name="chevron-down" size={12} strokeWidth={2} class="lang__chevron" />
           </button>
 
           <ul id="lang-menu" class="lang__menu" hidden data-lang-menu>
             {
-              languages.map((lang) => (
+              locales.map((locale) => (
                 <li>
-                  <button
-                    type="button"
+                  <a
+                    href={localePath(locale)}
                     class="lang__option"
-                    lang={lang.code}
-                    data-lang-option={lang.code}
-                    data-lang-short={lang.short}
-                    aria-current={lang.code === current.code ? 'true' : undefined}
+                    lang={localeInfo[locale].htmlLang}
+                    hreflang={localeInfo[locale].htmlLang}
+                    data-lang-option={locale}
+                    aria-current={locale === lang ? 'true' : undefined}
                   >
-                    {lang.name}
+                    {localeInfo[locale].name}
                     <Icon name="check" size={16} strokeWidth={2.5} class="lang__check" />
-                  </button>
+                  </a>
                 </li>
               ))
             }
           </ul>
         </div>
-
       </div>
     </nav>
   </div>
@@ -194,6 +201,7 @@ const current = languages[0]!;
   }
 
   .lang__option {
+    text-decoration: none;
     display: flex;
     width: 100%;
     justify-content: space-between;
@@ -212,6 +220,7 @@ const current = languages[0]!;
 
   .lang__option:hover {
     background: var(--bg-soft);
+    color: var(--navy);
   }
 
   .lang__option :global(.lang__check) {
@@ -328,9 +337,7 @@ const current = languages[0]!;
 </style>
 
 <script>
-  import type { LanguageCode } from '@/data/site';
-
-  const STORAGE_KEY = 'bitzar:lang';
+  import { LOCALE_STORAGE_KEY, isLocale } from '@/i18n/config';
 
   // ---------- Menu mobile ----------
   const menuToggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
@@ -341,24 +348,27 @@ const current = languages[0]!;
     menu.classList.toggle('is-open', open);
     menuToggle.setAttribute('aria-expanded', String(open));
     const label = menuToggle.querySelector('.sr-only');
-    if (label) label.textContent = open ? 'Fechar menu' : 'Abrir menu';
+    if (label) {
+      label.textContent = (open ? menuToggle.dataset.labelClose : menuToggle.dataset.labelOpen) ?? '';
+    }
   }
 
   menuToggle?.addEventListener('click', () => {
     setMenu(menuToggle.getAttribute('aria-expanded') !== 'true');
   });
 
-  // Fecha o menu mobile ao clicar em um link
-  menu?.querySelectorAll('a').forEach((link) => {
+  // Fecha o menu mobile ao clicar em um link de seção
+  menu?.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((link) => {
     link.addEventListener('click', () => setMenu(false));
   });
 
   // ---------- Seletor de idioma ----------
+  // Cada opção é um link para a versão do site naquele idioma ("/", "/en/", "/es/").
+  // Ao clicar, a escolha fica salva para a próxima visita.
   const langRoot = document.querySelector<HTMLElement>('[data-lang]');
   const langToggle = document.querySelector<HTMLButtonElement>('[data-lang-toggle]');
   const langMenu = document.querySelector<HTMLUListElement>('[data-lang-menu]');
-  const langCurrent = document.querySelector<HTMLElement>('[data-lang-current]');
-  const options = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-lang-option]'));
+  const options = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-lang-option]'));
 
   function setLangMenu(open: boolean): void {
     if (!langToggle || !langMenu) return;
@@ -370,47 +380,24 @@ const current = languages[0]!;
     }
   }
 
-  function applyLanguage(code: LanguageCode): void {
-    const option = options.find((o) => o.dataset.langOption === code);
-    if (!option || !langCurrent || !langToggle) return;
-
-    options.forEach((o) => o.removeAttribute('aria-current'));
-    option.setAttribute('aria-current', 'true');
-    langCurrent.textContent = option.dataset.langShort ?? code;
-    langToggle.setAttribute('aria-label', `Alterar idioma (atual: ${option.textContent?.trim()})`);
-    document.documentElement.lang = code;
-
-    // Ponto de extensão: aqui entraria a troca real do conteúdo (ex.: redirecionar para /en/).
-    document.dispatchEvent(new CustomEvent<LanguageCode>('bitzar:language-change', { detail: code }));
-  }
-
-  function readSavedLanguage(): LanguageCode | null {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved === 'pt-BR' || saved === 'en' || saved === 'es' ? saved : null;
-    } catch {
-      return null;
-    }
-  }
-
-  const saved = readSavedLanguage();
-  if (saved) applyLanguage(saved);
-
   langToggle?.addEventListener('click', () => {
     setLangMenu(langToggle.getAttribute('aria-expanded') !== 'true');
   });
 
   options.forEach((option) => {
-    option.addEventListener('click', () => {
-      const code = option.dataset.langOption as LanguageCode;
-      applyLanguage(code);
+    option.addEventListener('click', (event) => {
+      const locale = option.dataset.langOption;
+      if (!isLocale(locale)) return;
+
       try {
-        localStorage.setItem(STORAGE_KEY, code);
+        localStorage.setItem(LOCALE_STORAGE_KEY, locale);
       } catch {
-        /* armazenamento indisponível: segue sem salvar */
+        /* armazenamento indisponível: troca de idioma mesmo assim */
       }
-      setLangMenu(false);
-      langToggle?.focus();
+
+      // Mantém a seção em que a pessoa estava (#servicos, #cases…)
+      event.preventDefault();
+      window.location.href = option.pathname + window.location.hash;
     });
   });
 
@@ -427,7 +414,7 @@ const current = languages[0]!;
       return;
     }
     if (langMenu?.hidden) return;
-    const index = options.indexOf(document.activeElement as HTMLButtonElement);
+    const index = options.indexOf(document.activeElement as HTMLAnchorElement);
     if (event.key === 'ArrowDown') {
       event.preventDefault();
       options[(index + 1) % options.length]?.focus();

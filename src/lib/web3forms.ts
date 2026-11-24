@@ -1,4 +1,6 @@
-
+// Envio do diagnóstico por e-mail usando o Web3Forms (https://web3forms.com).
+// A chave fica na variável PUBLIC_WEB3FORMS_KEY do arquivo .env — veja o README.
+// Sem chave configurada, o envio é SIMULADO: o site continua funcionando
 
 const ENDPOINT = 'https://api.web3forms.com/submit';
 const PLACEHOLDER = 'INSIRA_A_CHAVE_DO_WEB3FORMS';
@@ -12,6 +14,9 @@ export interface DiagnosticPayload {
   nome: string;
   email: string;
   respostas: DiagnosticAnswer[];
+  /** Idioma em que a pessoa respondeu (ex.: "English"). */
+  idioma: string;
+  /** Campo anti-spam: se vier marcado, o Web3Forms descarta o envio. */
   botcheck: boolean;
 }
 
@@ -53,6 +58,7 @@ export async function sendDiagnostic(payload: DiagnosticPayload): Promise<void> 
       replyto: payload.email,
       Nome: payload.nome,
       'E-mail': payload.email,
+      'Idioma do site': payload.idioma,
       ...answers,
       botcheck: payload.botcheck,
     }),

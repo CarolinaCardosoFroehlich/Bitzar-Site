@@ -1,0 +1,38 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Hero from '@/components/Hero.astro';
+import Clients from '@/components/Clients.astro';
+import Services from '@/components/Services.astro';
+import About from '@/components/About.astro';
+import HowWeWork from '@/components/HowWeWork.astro';
+import Cases from '@/components/Cases.astro';
+import Diagnostic from '@/components/Diagnostic.astro';
+import Footer from '@/components/Footer.astro';
+import ChatAssistant from '@/components/ChatAssistant.astro';
+import { defaultLocale, getDictionary, locales, resolveLocale } from '@/i18n';
+
+export const getStaticPaths = (() =>
+  locales.map((locale) => ({
+    params: { lang: locale === defaultLocale ? undefined : locale },
+  }))) satisfies GetStaticPaths;
+
+const lang = resolveLocale(Astro.params.lang);
+const t = getDictionary(lang);
+---
+
+<BaseLayout lang={lang} title={t.meta.title} description={t.meta.description}>
+  <Header lang={lang} />
+  <main>
+    <Hero t={t.hero} />
+    <Clients t={t.clients} />
+    <Services t={t.services} />
+    <About t={t.about} />
+    <HowWeWork t={t.howWeWork} />
+    <Cases t={t.cases} />
+    <Diagnostic t={t.diagnostic} lang={lang} />
+  </main>
+  <Footer t={t.footer} />
+  <ChatAssistant t={t.chat} />
+</BaseLayout>

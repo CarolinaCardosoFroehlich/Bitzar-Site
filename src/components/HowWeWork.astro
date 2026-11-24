@@ -1,26 +1,33 @@
 ---
-import { hiringModels } from '@/data/site';
+import type { Dictionary } from '@/i18n';
+
+interface Props {
+  t: Dictionary['howWeWork'];
+}
+
+const { t } = Astro.props;
 ---
 
 <section id="como-trabalhamos" class="section section--soft">
   <div class="container how">
     <div class="how__head">
-      <p class="eyebrow">Como trabalhamos</p>
-      <h2 class="h2">Três formas de contratar a Bitzar</h2>
-      <p class="lead">
-        Escolha o modelo que combina com o momento da sua empresa. Se não souber qual, o diagnóstico
-        abaixo ajuda.
-      </p>
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 class="h2">{t.title}</h2>
+      <p class="lead">{t.lead}</p>
     </div>
 
     <ol class="how__grid">
       {
-        hiringModels.map((model, i) => (
+        t.items.map((model, i) => (
           <li class="model">
-            <p class="model__number">Modelo {String(i + 1).padStart(2, '0')}</p>
+            <p class="model__number">
+              {t.modelLabel} {String(i + 1).padStart(2, '0')}
+            </p>
             <h3 class="model__title">{model.title}</h3>
             <p class="model__desc">{model.description}</p>
-            <p class="model__ideal">Ideal para: {model.idealFor}</p>
+            <p class="model__ideal">
+              {t.idealForLabel} {model.idealFor}
+            </p>
           </li>
         ))
       }

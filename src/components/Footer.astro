@@ -1,15 +1,14 @@
 ---
 import Logo from './Logo.astro';
 import { company } from '@/data/site';
+import type { Dictionary } from '@/i18n';
 
+interface Props {
+  t: Dictionary['footer'];
+}
+
+const { t } = Astro.props;
 const year = new Date().getFullYear();
-
-const footerLinks = [
-  { label: 'Serviços', href: '#servicos' },
-  { label: 'Como trabalhamos', href: '#como-trabalhamos' },
-  { label: 'Cases', href: '#cases' },
-  { label: 'Diagnóstico', href: '#diagnostico' },
-];
 ---
 
 <footer class="footer">
@@ -17,15 +16,15 @@ const footerLinks = [
     <div class="footer__top">
       <div class="footer__brand">
         <Logo variant="dark" />
-        <p>{company.tagline}</p>
+        <p>{t.tagline}</p>
       </div>
 
       <div class="footer__cols">
         <nav aria-labelledby="footer-nav-title" class="footer__col">
-          <p id="footer-nav-title" class="footer__label">Navegação</p>
+          <p id="footer-nav-title" class="footer__label">{t.navTitle}</p>
           <ul>
             {
-              footerLinks.map((link) => (
+              t.links.map((link) => (
                 <li>
                   <a href={link.href}>{link.label}</a>
                 </li>
@@ -35,7 +34,7 @@ const footerLinks = [
         </nav>
 
         <div class="footer__col">
-          <p class="footer__label">Contato</p>
+          <p class="footer__label">{t.contactTitle}</p>
           <address>
             <span>{company.email}</span>
             <span>{company.careersEmail}</span>
@@ -48,7 +47,7 @@ const footerLinks = [
 
     <div class="footer__bottom">
       <span>© {year} {company.legalName} · CNPJ {company.cnpj}</span>
-      <a href="#topo">Política de Privacidade</a>
+      <a href="#topo">{t.privacy}</a>
     </div>
   </div>
 </footer>

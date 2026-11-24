@@ -1,27 +1,92 @@
 ---
 import '@/styles/global.css';
+import {
+  defaultLocale,
+  locales,
+  localeInfo,
+  localePath,
+  LOCALE_STORAGE_KEY,
+  type Locale,
+} from '@/i18n';
 
 interface Props {
-  title?: string;
-  description?: string;
+  lang: Locale;
+  title: string;
+  description: string;
 }
 
-const {
-  title = 'Bitzar — Software sob medida para empresas',
-  description = 'A Bitzar é uma software house de Marília/SP que desenvolve aplicativos, sistemas web, soluções de dados e times dedicados para empresas de todos os tamanhos.',
-} = Astro.props;
+const { lang, title, description } = Astro.props;
+
+// Endereços de cada idioma, usados pelo script de detecção e pelas tags hreflang.
+const paths = Object.fromEntries(locales.map((l) => [l, localePath(l)])) as Record<Locale, string>;
+const site = Astro.site ?? new URL('https://bitzar.solutions');
 ---
 
 <!doctype html>
-<html lang="pt-BR">
+<html lang={localeInfo[lang].htmlLang} data-locale={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!--
+      Detecção do idioma do navegador. Roda antes da página aparecer.
+      Só age na página em português ("/"):
+        1. se a pessoa já escolheu um idioma no seletor, usa essa escolha;
+        2. senão, usa o idioma do navegador (inglês → /en/, espanhol → /es/).
+      Quem abre /en/ ou /es/ direto (por um link, por exemplo) nunca é redirecionado.
+    -->
+    <script
+      is:inline
+      define:vars={{ current: lang, defaultLocale, paths, storageKey: LOCALE_STORAGE_KEY }}
+    >
+      (function () {
+        if (current !== defaultLocale) return;
+
+        var saved = null;
+        try {
+          saved = localStorage.getItem(storageKey);
+        } catch (e) {
+          /* armazenamento bloqueado: segue sem a escolha salva */
+        }
+        if (saved && saved.indexOf('pt') === 0) saved = 'pt'; // valor antigo "pt-BR"
+
+        var target = saved && paths[saved] ? saved : null;
+
+        if (!target) {
+          var langs =
+            navigator.languages && navigator.languages.length
+              ? navigator.languages
+              : [navigator.language || ''];
+          for (var i = 0; i < langs.length; i++) {
+            var base = String(langs[i]).toLowerCase().split('-')[0];
+            if (paths[base]) {
+              target = base;
+              break;
+            }
+          }
+        }
+
+        if (target && target !== current) {
+          location.replace(paths[target] + location.hash);
+        }
+      })();
+    </script>
+
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content={localeInfo[lang].ogLocale} />
+
+    <!-- Avisa os buscadores que a mesma página existe em outros idiomas -->
+    {
+      locales.map((l) => (
+        <link rel="alternate" hreflang={localeInfo[l].htmlLang} href={new URL(paths[l], site).href} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={new URL(paths[defaultLocale], site).href} />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

@@ -1,24 +1,27 @@
 ---
 import Icon from './Icon.astro';
-import { services } from '@/data/site';
+import type { Dictionary } from '@/i18n';
+
+interface Props {
+  t: Dictionary['services'];
+}
+
+const { t } = Astro.props;
 ---
 
 <section id="servicos" class="section">
   <div class="container stack">
     <div class="services__head">
       <div class="services__titles">
-        <p class="eyebrow">Serviços</p>
-        <h2 class="h2">O que a Bitzar faz pela sua empresa</h2>
+        <p class="eyebrow">{t.eyebrow}</p>
+        <h2 class="h2">{t.title}</h2>
       </div>
-      <p class="lead services__intro">
-        Seis frentes, um mesmo time. Você não precisa contratar fornecedores diferentes para cada
-        etapa.
-      </p>
+      <p class="lead services__intro">{t.intro}</p>
     </div>
 
     <ul class="services__grid">
       {
-        services.map((service) => (
+        t.items.map((service) => (
           <li class="card">
             <span class="card__icon">
               <Icon name={service.icon} />
@@ -26,7 +29,7 @@ import { services } from '@/data/site';
             <h3 class="card__title">{service.title}</h3>
             <p class="card__desc">{service.description}</p>
             <p class="card__tags">
-              <span class="sr-only">Tecnologias: </span>
+              <span class="sr-only">{t.techLabel} </span>
               {service.tags.join(' · ')}
             </p>
           </li>
@@ -67,8 +70,20 @@ import { services } from '@/data/site';
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
+  }
+
+  @media (max-width: 1024px) {
+    .services__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .services__grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   .card {

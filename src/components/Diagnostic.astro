@@ -1,26 +1,30 @@
 ---
 import Icon from './Icon.astro';
-import { diagnosticQuestions } from '@/data/site';
+import { format, type Dictionary, type Locale } from '@/i18n';
 
-const total = diagnosticQuestions.length;
-const first = diagnosticQuestions[0]!;
+interface Props {
+  t: Dictionary['diagnostic'];
+  lang: Locale;
+}
+
+const { t, lang } = Astro.props;
+const total = t.questions.length;
+const first = t.questions[0]!;
+const firstStep = format(t.stepLabel, { current: 1, total });
 ---
 
 <section id="diagnostico" class="section section--dark">
   <div class="container diag">
     <div class="diag__intro">
-      <p class="eyebrow diag__eyebrow">Diagnóstico gratuito</p>
-      <h2 class="h2">Não sabe por onde começar? Responda {total} perguntas.</h2>
-      <p class="lead">
-        Leva menos de um minuto. Com as respostas, a Bitzar já chega na primeira conversa entendendo
-        o seu cenário.
-      </p>
+      <p class="eyebrow diag__eyebrow">{t.eyebrow}</p>
+      <h2 class="h2">{format(t.title, { total })}</h2>
+      <p class="lead">{t.lead}</p>
       <div class="diag__progress">
-        <span class="diag__progress-label" data-progress-label>Pergunta 1 de {total}</span>
+        <span class="diag__progress-label" data-progress-label>{firstStep}</span>
         <div
           class="diag__bar"
           role="progressbar"
-          aria-label="Progresso do diagnóstico"
+          aria-label={t.progressLabel}
           aria-valuemin="0"
           aria-valuemax={total}
           aria-valuenow="0"
@@ -31,12 +35,19 @@ const first = diagnosticQuestions[0]!;
       </div>
     </div>
 
-    <div class="diag__card" data-diagnostic aria-live="polite">
+    <!-- data-texts leva os textos do idioma atual para o script do navegador -->
+    <div
+      class="diag__card"
+      data-diagnostic
+      data-locale={lang}
+      data-texts={JSON.stringify(t)}
+      aria-live="polite"
+    >
       <!-- Passo: pergunta -->
       <div class="diag__view" data-view="question">
         <div class="diag__top">
-          <button type="button" class="diag__back" data-back hidden>← Voltar</button>
-          <span class="diag__step" data-step-label>Pergunta 1 de {total}</span>
+          <button type="button" class="diag__back" data-back hidden>{t.back}</button>
+          <span class="diag__step" data-step-label>{firstStep}</span>
         </div>
         <fieldset class="diag__fieldset">
           <legend class="diag__question" data-question tabindex="-1">{first.title}</legend>
@@ -54,22 +65,22 @@ const first = diagnosticQuestions[0]!;
           </div>
         </fieldset>
         <button type="button" class="btn btn--primary diag__next" data-next disabled>
-          Escolha uma opção para continuar
+          {t.chooseOption}
         </button>
       </div>
 
       <!-- Passo: resumo + contato -->
       <div class="diag__view" data-view="summary" hidden>
-        <h3 class="diag__question" tabindex="-1" data-summary-title>Seu resumo</h3>
+        <h3 class="diag__question" tabindex="-1" data-summary-title>{t.summaryTitle}</h3>
         <dl class="summary" data-summary></dl>
         <form class="diag__form" data-form novalidate>
           <div class="diag__fields">
             <label class="field">
-              Nome
+              {t.nameLabel}
               <input type="text" name="nome" autocomplete="name" required />
             </label>
             <label class="field">
-              E-mail
+              {t.emailLabel}
               <input type="email" name="email" autocomplete="email" required />
             </label>
           </div>
@@ -83,9 +94,9 @@ const first = diagnosticQuestions[0]!;
           />
           <p class="diag__error" role="alert" data-error hidden></p>
           <button type="submit" class="btn btn--accent diag__submit" data-submit>
-            Enviar para a Bitzar
+            {t.submit}
           </button>
-          <button type="button" class="diag__restart" data-restart>Refazer diagnóstico</button>
+          <button type="button" class="diag__restart" data-restart>{t.restart}</button>
         </form>
       </div>
 
@@ -94,12 +105,9 @@ const first = diagnosticQuestions[0]!;
         <span class="diag__sent-icon">
           <Icon name="check" size={26} strokeWidth={2.5} />
         </span>
-        <h3 class="diag__question" tabindex="-1" data-sent-title>Recebemos seu diagnóstico!</h3>
-        <p class="diag__sent-text">
-          Um especialista da Bitzar vai entrar em contato em até 1 dia útil para conversar sobre o
-          seu projeto.
-        </p>
-        <button type="button" class="btn btn--outline" data-restart>Começar de novo</button>
+        <h3 class="diag__question" tabindex="-1" data-sent-title>{t.sentTitle}</h3>
+        <p class="diag__sent-text">{t.sentText}</p>
+        <button type="button" class="btn btn--outline" data-restart>{t.startOver}</button>
       </div>
     </div>
   </div>
@@ -431,7 +439,11 @@ const first = diagnosticQuestions[0]!;
 </style>
 
 <script>
-  import { diagnosticQuestions as questions } from '@/data/site';
+  import { format } from '@/i18n/format';
+  import { localeInfo, isLocale } from '@/i18n/config';
+  import type { DiagnosticTexts } from '@/i18n/types';
+  // O e-mail para a Bitzar sempre vai em português, qualquer que seja o idioma do visitante.
+  import { pt } from '@/i18n/dictionaries/pt';
   import { sendDiagnostic, type DiagnosticPayload } from '@/lib/web3forms';
 
   type Answer = number | null;
@@ -442,18 +454,23 @@ const first = diagnosticQuestions[0]!;
     sent: boolean;
   }
 
-  const total = questions.length;
-  const createInitialState = (): DiagnosticState => ({
-    step: 0,
-    answers: questions.map(() => null),
-    sent: false,
-  });
-
-  let state = createInitialState();
-
   const root = document.querySelector<HTMLElement>('[data-diagnostic]');
 
   if (root) {
+    // Textos do idioma atual, enviados pelo Astro no atributo data-texts
+    const t = JSON.parse(root.dataset.texts ?? '{}') as DiagnosticTexts;
+    const locale = isLocale(root.dataset.locale) ? root.dataset.locale : 'pt';
+    const questions = t.questions;
+    const total = questions.length;
+
+    const createInitialState = (): DiagnosticState => ({
+      step: 0,
+      answers: questions.map(() => null),
+      sent: false,
+    });
+
+    let state = createInitialState();
+
     const $ = <T extends HTMLElement>(selector: string): T => {
       const el = root.querySelector<T>(selector) ?? document.querySelector<T>(selector);
       if (!el) throw new Error(`Diagnóstico: elemento ${selector} não encontrado`);
@@ -493,7 +510,7 @@ const first = diagnosticQuestions[0]!;
       const pct = done ? 100 : state.step * (100 / total) + 100 / total / 2;
       progressFill.style.width = `${pct}%`;
       progress.setAttribute('aria-valuenow', String(done ? total : state.step));
-      const label = done ? 'Concluído' : `Pergunta ${state.step + 1} de ${total}`;
+      const label = done ? t.doneLabel : format(t.stepLabel, { current: state.step + 1, total });
       progressLabel.textContent = label;
       stepLabel.textContent = label;
     }
@@ -529,9 +546,9 @@ const first = diagnosticQuestions[0]!;
       nextBtn.disabled = !hasAnswer;
       nextBtn.textContent = hasAnswer
         ? state.step === total - 1
-          ? 'Ver resumo →'
-          : 'Continuar →'
-        : 'Escolha uma opção para continuar';
+          ? t.seeSummary
+          : t.next
+        : t.chooseOption;
     }
 
     function renderSummary(): void {
@@ -594,11 +611,9 @@ const first = diagnosticQuestions[0]!;
     });
 
     const submitBtn = $<HTMLButtonElement>('[data-submit]');
-    const submitLabel = submitBtn.textContent?.trim() ?? 'Enviar';
-
     function setSending(sending: boolean): void {
       submitBtn.disabled = sending;
-      submitBtn.textContent = sending ? 'Enviando…' : submitLabel;
+      submitBtn.textContent = sending ? t.sending : t.submit;
     }
 
     function showError(message: string): void {
@@ -615,7 +630,7 @@ const first = diagnosticQuestions[0]!;
       fields.forEach((input) => input.setAttribute('aria-invalid', String(!input.checkValidity())));
 
       if (invalid.length > 0) {
-        showError('Preencha seu nome e um e-mail válido para enviar.');
+        showError(t.validationError);
         invalid[0]?.focus();
         return;
       }
@@ -625,13 +640,15 @@ const first = diagnosticQuestions[0]!;
       const payload: DiagnosticPayload = {
         nome: String(data.get('nome') ?? '').trim(),
         email: String(data.get('email') ?? '').trim(),
-        respostas: questions.map((q, i) => {
+        // Respostas traduzidas para o português pelo índice da opção escolhida
+        respostas: pt.diagnostic.questions.map((q, i) => {
           const answer = state.answers[i];
           return {
             pergunta: q.short,
             resposta: answer === null || answer === undefined ? '—' : (q.options[answer] ?? '—'),
           };
         }),
+        idioma: localeInfo[locale].name,
         botcheck: data.get('botcheck') !== null,
       };
 
@@ -642,7 +659,7 @@ const first = diagnosticQuestions[0]!;
         render($<HTMLElement>('[data-sent-title]'));
       } catch (error) {
         console.error('[Bitzar] Falha ao enviar diagnóstico', error);
-        showError('Não foi possível enviar agora. Tente de novo em alguns instantes.');
+        showError(t.sendError);
       } finally {
         setSending(false);
       }

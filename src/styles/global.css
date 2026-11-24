@@ -24,8 +24,8 @@
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
   /* Layout */
-  --container: 1200px;
-  --gutter: 24px;
+  --container: 1920px;
+  --gutter: clamp(24px, 4vw, 72px);
   --section-y: 96px;
   --radius-sm: 6px;
   --radius: 10px;

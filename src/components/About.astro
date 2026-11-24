@@ -1,26 +1,24 @@
 ---
-import { stats } from '@/data/site';
+import type { Dictionary } from '@/i18n';
+
+interface Props {
+  t: Dictionary['about'];
+}
+
+const { t } = Astro.props;
 ---
 
 <section id="sobre" class="section section--dark">
   <div class="container about">
     <div class="about__copy">
-      <p class="eyebrow">Sobre a Bitzar</p>
-      <h2 class="h2">Tecnologia de verdade, feita perto de você.</h2>
-      <p class="lead">
-        A Bitzar nasceu em Marília em 2016 para resolver um problema simples: empresas precisam de
-        software confiável, mas nem sempre encontram um parceiro que entenda o negócio antes de
-        escrever a primeira linha de código.
-      </p>
-      <p class="lead">
-        Hoje atendemos clientes de diferentes portes com um time que acompanha o projeto do começo
-        ao fim, com conversa direta e sem intermediários.
-      </p>
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 class="h2">{t.title}</h2>
+      {t.paragraphs.map((paragraph) => <p class="lead">{paragraph}</p>)}
     </div>
 
     <dl class="stats">
       {
-        stats.map((stat) => (
+        t.stats.map((stat) => (
           <div class="stats__item">
             <dt class="stats__label">{stat.label}</dt>
             <dd class="stats__value">{stat.value}</dd>
@@ -33,17 +31,17 @@ import { stats } from '@/data/site';
 
 <style>
   .about {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 56px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 64px;
+    align-items: center;
   }
 
   .about__copy {
-    flex: 999 1 480px;
-    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    max-width: 640px;
   }
 
   .about__copy .lead {
@@ -51,8 +49,6 @@ import { stats } from '@/data/site';
   }
 
   .stats {
-    flex: 1 1 380px;
-    min-width: 0;
     margin: 0;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -61,33 +57,45 @@ import { stats } from '@/data/site';
     border: 1px solid var(--navy-line);
     border-radius: var(--radius);
     overflow: hidden;
-    align-self: flex-start;
   }
 
   .stats__item {
     background: var(--navy);
-    padding: 28px;
+    padding: 36px 32px;
     display: flex;
     flex-direction: column-reverse;
-    gap: 6px;
+    justify-content: flex-end;
+    gap: 8px;
   }
 
   .stats__value {
     margin: 0;
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: clamp(32px, 4vw, 44px);
+    font-size: clamp(36px, 4vw, 52px);
+    line-height: 1;
     color: var(--accent);
   }
 
   .stats__label {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--on-dark-2);
+  }
+
+  @media (max-width: 960px) {
+    .about {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .about__copy {
+      max-width: none;
+    }
   }
 
   @media (max-width: 720px) {
     .stats__item {
-      padding: 20px;
+      padding: 24px 20px;
     }
   }
 </style>

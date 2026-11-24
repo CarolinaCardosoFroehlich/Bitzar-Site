@@ -1,31 +1,35 @@
 ---
-import { company, processSteps } from '@/data/site';
+import { company } from '@/data/site';
+import type { Dictionary } from '@/i18n';
+
+interface Props {
+  t: Dictionary['hero'];
+}
+
+const { t } = Astro.props;
 ---
 
 <section id="topo" class="hero">
   <div class="container hero__inner">
     <div class="hero__copy">
       <p class="eyebrow">
-        {company.legalName} · {company.city} · Desde {company.foundedYear}
+        {company.legalName} · {company.city} · {t.since} {company.foundedYear}
       </p>
       <h1 class="hero__title">
-        Software sob medida para empresas que querem <mark>crescer com tecnologia</mark>.
+        {t.titleBefore} <mark>{t.titleHighlight}</mark>{t.titleAfter}
       </h1>
-      <p class="hero__lead">
-        Somos a Bitzar, uma software house que desenvolve aplicativos, sistemas web, soluções de
-        dados e times dedicados para empresas de todos os tamanhos.
-      </p>
+      <p class="hero__lead">{t.lead}</p>
       <div class="hero__actions">
-        <a href="#diagnostico" class="btn btn--primary">Fazer diagnóstico gratuito</a>
-        <a href="#servicos" class="btn btn--outline">Conhecer os serviços</a>
+        <a href="#diagnostico" class="btn btn--primary">{t.primaryCta}</a>
+        <a href="#servicos" class="btn btn--outline">{t.secondaryCta}</a>
       </div>
     </div>
 
     <aside class="process" aria-labelledby="process-title">
-      <p id="process-title" class="process__label">Do problema ao software em produção</p>
+      <p id="process-title" class="process__label">{t.processTitle}</p>
       <ol class="process__list">
         {
-          processSteps.map((step) => (
+          t.steps.map((step) => (
             <li class="process__item">
               <span class="process__number">{step.number}</span>
               <div>
